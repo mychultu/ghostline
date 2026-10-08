@@ -74,12 +74,34 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def _css(self, css: str, code: int = 200) -> None:
+        body = css.encode("utf-8")
+        self.send_response(code)
+        self.send_header("Content-Type", "text/css; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _js(self, js: str, code: int = 200) -> None:
+        body = js.encode("utf-8")
+        self.send_response(code)
+        self.send_header("Content-Type", "application/javascript; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
     def do_GET(self):
         path = urlparse(self.path).path
         c = self.companion
 
         if path == "/" or path == "/index.html":
             return self._html(read_ui("index.html"))
+
+        if path == "/style.css":
+            return self._css(read_ui("style.css"))
+
+        if path == "/script.js":
+            return self._js(read_ui("script.js"))
 
         if path == "/status":
             current = c.awakener.current()
