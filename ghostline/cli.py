@@ -237,6 +237,20 @@ def main(argv: Optional[list[str]] = None) -> int:
         print("       python3 -m ghostline run <name> --model <model-id>")
         return 0
 
+    if argv[0] == "serve":
+        if len(argv) < 2:
+            print("usage: python3 -m ghostline serve <name> [--port N]")
+            return 1
+        name = argv[1]
+        port = 8000
+        if "--port" in argv:
+            i = argv.index("--port")
+            if i + 1 < len(argv):
+                port = int(argv[i + 1])
+        from .server import serve
+        serve(name, port=port)
+        return 0
+
     if argv[0] != "run":
         print(f"unknown command: {argv[0]}")
         return 1
