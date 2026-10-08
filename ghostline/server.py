@@ -124,6 +124,58 @@ PAGE = """<!doctype html>
     overflow-x: auto;
     flex-shrink: 0;
   }
+.globe-field {
+  height: 140px;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 120%, rgba(232,176,96,0.08), transparent 60%),
+    linear-gradient(180deg, #0a0a0f 0%, #0d0d15 100%);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.globe {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffe0a0, #e8b060 40%, #8a5a20 100%);
+  box-shadow:
+    0 0 20px 4px rgba(232,176,96,0.5),
+    0 0 60px 15px rgba(232,176,96,0.15);
+  transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.2),
+              box-shadow 0.6s ease,
+              background 0.6s ease;
+  transform: translateY(0) scale(1);
+}
+.globe.idle {
+  animation: breathe 6s ease-in-out infinite;
+}
+.globe.thinking {
+  transform: translateY(-14px) scale(0.92);
+  background: radial-gradient(circle at 35% 30%, #c0c8e0, #6a6a8a 40%, #3a3a50 100%);
+  box-shadow:
+    0 0 16px 2px rgba(120,120,180,0.5),
+    0 0 40px 10px rgba(120,120,180,0.15);
+}
+.globe.speaking {
+  transform: translateY(-24px) scale(1.15);
+  box-shadow:
+    0 0 30px 8px rgba(232,176,96,0.7),
+    0 0 90px 25px rgba(232,176,96,0.25);
+}
+.globe.warm {
+  background: radial-gradient(circle at 35% 30%, #ffd0a0, #e89060 40%, #8a4020 100%);
+}
+.globe.cold {
+  background: radial-gradient(circle at 35% 30%, #a0d0ff, #6080c0 40%, #203060 100%);
+}
+@keyframes breathe {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-4px) scale(1.04); }
+}
   .toolbar button {
     background: transparent;
     border: 1px solid var(--border);
@@ -145,6 +197,9 @@ PAGE = """<!doctype html>
     <span class="name" id="cname">companion</span>
     <span class="status" id="status">loading...</span>
   </header>
+  <div class="globe-field">
+    <div class="globe idle" id="globe"></div>
+  </div>
   <div class="toolbar">
     <button onclick="cmd('/state')">state</button>
     <button onclick="cmd('/kept')">kept</button>
@@ -162,6 +217,7 @@ PAGE = """<!doctype html>
 const log = document.getElementById("log");
 const input = document.getElementById("input");
 const status = document.getElementById("status");
+const globe = document.getElementById("globe");
 
 function add(role, text, note) {
   const div = document.createElement("div");
@@ -191,6 +247,7 @@ async function send() {
   if (text.startsWith("/")) { await cmd(text); return; }
   add("user", text);
   status.textContent = "thinking...";
+pulse("thinking");
   try {
     const res = await fetch("/say", {
       method: "POST",
@@ -200,6 +257,8 @@ async function send() {
     const data = await res.json();
     add("companion", data.reply, data.gap_note || null);
     status.textContent = data.soft ? "soft refusal" : "ready";
+pulse("speaking", data.soft ? "cold" : "warm");
+setTimeout(() => pulse("idle"), 1800);
   } catch (e) {
     add("companion", "[error] " + e.message);
     status.textContent = "error";
@@ -210,6 +269,11 @@ async function cmd(c) {
   const res = await fetch(c.slice(1));
   const data = await res.json();
   add("system", JSON.stringify(data, null, 2));
+}
+function pulse(state, mood) {
+  if (!globe) return;
+  globe.className = "globe " + state;
+  if (mood) globe.classList.add(mood);
 }
 
 input.addEventListener("keydown", e => { if (e.key === "Enter") send(); });
