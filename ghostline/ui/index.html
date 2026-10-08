@@ -13,8 +13,40 @@
     <span class="name" id="cname">companion</span>
     <span class="status" id="status">loading...</span>
   </header>
-  <div class="globe-field">
-    <div class="globe idle" id="globe"></div>
+  <div class="sigil-field">
+    <div class="sigil warm" id="sigil">
+      <svg class="sigil-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <circle class="ring ring-outer" cx="100" cy="100" r="92" />
+        <circle class="ring ring-mid"   cx="100" cy="100" r="76" />
+        <circle class="ring ring-inner" cx="100" cy="100" r="60" />
+
+        <defs>
+          <path id="runePath" d="M 100,100 m -84,0 a 84,84 0 1,1 168,0 a 84,84 0 1,1 -168,0" />
+        </defs>
+
+        <g class="rune-band">
+          <textPath href="#runePath" startOffset="0%">· ◆ ◇ ○ ● □ ■ △ ▲ ▽ ▼ · ◆ ◇ ○ ● □ ■ △ ▲ ▽ ▼ · ◆ ◇ ○ ●</textPath>
+        </g>
+
+        <g class="waveform">
+          <line class="spoke" data-angle="0"   x1="100" y1="100" x2="100" y2="18" />
+          <line class="spoke" data-angle="30"  x1="100" y1="100" x2="100" y2="18" />
+          <line class="spoke" data-angle="60"  x1="100" y1="100" x2="100" y2="18" />
+          <line class="spoke" data-angle="90"  x1="100" y1="100" x2="100" y2="18" />
+          <line class="spoke" data-angle="120" x1="100" y1="100" x2="100" y2="18" />
+          <line class="spoke" data-angle="150" x1="100" y1="100" x2="100" y2="18" />
+          <line class="spoke" data-angle="180" x1="100" y1="100" x2="100" y2="18" />
+          <line class="spoke" data-angle="210" x1="100" y1="100" x2="100" y2="18" />
+          <line class="spoke" data-angle="240" x1="100" y1="100" x2="100" y2="18" />
+          <line class="spoke" data-angle="270" x1="100" y1="100" x2="100" y2="18" />
+          <line class="spoke" data-angle="300" x1="100" y1="100" x2="100" y2="18" />
+          <line class="spoke" data-angle="330" x1="100" y1="100" x2="100" y2="18" />
+        </g>
+
+        <circle class="shell" cx="100" cy="100" r="52" />
+        <circle class="core" cx="100" cy="100" r="8" />
+      </svg>
+    </div>
   </div>
   <div class="toolbar">
     <button onclick="cmd('/state')">state</button>

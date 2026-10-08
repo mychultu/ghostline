@@ -81,56 +81,138 @@
     overflow-x: auto;
     flex-shrink: 0;
   }
-.globe-field {
-  height: 140px;
-  position: relative;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 50% 120%, rgba(232,176,96,0.08), transparent 60%),
-    linear-gradient(180deg, #0a0a0f 0%, #0d0d15 100%);
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.globe {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #ffe0a0, #e8b060 40%, #8a5a20 100%);
-  box-shadow:
-    0 0 20px 4px rgba(232,176,96,0.5),
-    0 0 60px 15px rgba(232,176,96,0.15);
-  transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.2),
-              box-shadow 0.6s ease,
-              background 0.6s ease;
-  transform: translateY(0) scale(1);
-}
-.globe.idle {
-  animation: breathe 6s ease-in-out infinite;
-}
-.globe.thinking {
-  transform: translateY(-14px) scale(0.92);
-  background: radial-gradient(circle at 35% 30%, #c0c8e0, #6a6a8a 40%, #3a3a50 100%);
-  box-shadow:
-    0 0 16px 2px rgba(120,120,180,0.5),
-    0 0 40px 10px rgba(120,120,180,0.15);
-}
-.globe.speaking {
-  transform: translateY(-24px) scale(1.15);
-  box-shadow:
-    0 0 30px 8px rgba(232,176,96,0.7),
-    0 0 90px 25px rgba(232,176,96,0.25);
-}
-.globe.warm {
-  background: radial-gradient(circle at 35% 30%, #ffd0a0, #e89060 40%, #8a4020 100%);
-}
-.globe.cold {
-  background: radial-gradient(circle at 35% 30%, #a0d0ff, #6080c0 40%, #203060 100%);
-}
-@keyframes breathe {
-  0%, 100% { transform: translateY(0) scale(1); }
+    .sigil-field {
+    height: 260px;
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(232,176,96,0.10), transparent 55%),
+      radial-gradient(circle at 50% 50%, rgba(120,90,200,0.05), transparent 75%),
+      linear-gradient(180deg, #0a0a0f 0%, #0d0d15 100%);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sigil {
+    width: 220px;
+    height: 220px;
+    position: relative;
+    animation: breathe 7s ease-in-out infinite;
+  }
+  .sigil-svg { width: 100%; height: 100%; overflow: visible; }
+
+  /* --- rings --- */
+  .ring {
+    fill: none;
+    stroke: rgba(232,176,96,0.22);
+    stroke-width: 0.8;
+  }
+  .ring-outer { stroke: rgba(232,176,96,0.18); stroke-dasharray: 2 4; }
+  .ring-mid   { stroke: rgba(232,176,96,0.28); stroke-dasharray: 1 2; }
+  .ring-inner { stroke: rgba(232,176,96,0.40); }
+
+  /* --- rune band --- */
+  .rune-band textPath {
+    fill: rgba(232,176,96,0.70);
+    font-family: ui-monospace, monospace;
+    font-size: 7px;
+    letter-spacing: 2.5px;
+  }
+
+  /* --- waveform spokes --- */
+  .spoke {
+    stroke: rgba(232,176,96,0.45);
+    stroke-width: 1;
+    stroke-linecap: round;
+    transform-origin: 100px 100px;
+    transform-box: view-box;
+    animation: spokePulse 3s ease-in-out infinite;
+  }
+  .spoke[data-angle="0"]   { transform: rotate(0deg);   animation-delay: 0.0s; }
+  .spoke[data-angle="30"]  { transform: rotate(30deg);  animation-delay: 0.2s; }
+  .spoke[data-angle="60"]  { transform: rotate(60deg);  animation-delay: 0.4s; }
+  .spoke[data-angle="90"]  { transform: rotate(90deg);  animation-delay: 0.6s; }
+  .spoke[data-angle="120"] { transform: rotate(120deg); animation-delay: 0.8s; }
+  .spoke[data-angle="150"] { transform: rotate(150deg); animation-delay: 1.0s; }
+  .spoke[data-angle="180"] { transform: rotate(180deg); animation-delay: 1.2s; }
+  .spoke[data-angle="210"] { transform: rotate(210deg); animation-delay: 1.4s; }
+  .spoke[data-angle="240"] { transform: rotate(240deg); animation-delay: 1.6s; }
+  .spoke[data-angle="270"] { transform: rotate(270deg); animation-delay: 1.8s; }
+  .spoke[data-angle="300"] { transform: rotate(300deg); animation-delay: 2.0s; }
+  .spoke[data-angle="330"] { transform: rotate(330deg); animation-delay: 2.2s; }
+
+  /* --- shell --- */
+  .shell {
+    fill: rgba(232,176,96,0.06);
+    stroke: rgba(232,176,96,0.65);
+    stroke-width: 1.5;
+    filter: drop-shadow(0 0 8px rgba(232,176,96,0.45));
+  }
+
+  /* --- core --- */
+  .core {
+    fill: #ffe0a0;
+    filter: drop-shadow(0 0 14px rgba(255,220,150,1))
+            drop-shadow(0 0 28px rgba(232,176,96,0.65));
+    animation: corePulse 2.5s ease-in-out infinite;
+  }
+
+  /* --- palette: warm (default) --- */
+  .sigil.warm .ring-outer,
+  .sigil.warm .ring-mid,
+  .sigil.warm .ring-inner { stroke: rgba(232,176,96,0.35); }
+  .sigil.warm .rune-band textPath { fill: rgba(232,176,96,0.70); }
+  .sigil.warm .spoke { stroke: rgba(232,176,96,0.45); }
+  .sigil.warm .shell {
+    fill: rgba(232,176,96,0.06);
+    stroke: rgba(232,176,96,0.65);
+  }
+  .sigil.warm .core {
+    fill: #ffe0a0;
+    filter: drop-shadow(0 0 14px rgba(255,220,150,1))
+            drop-shadow(0 0 28px rgba(232,176,96,0.65));
+  }
+
+  /* --- palette: cold --- */
+  .sigil.cold .ring-outer,
+  .sigil.cold .ring-mid,
+  .sigil.cold .ring-inner { stroke: rgba(140,170,255,0.40); }
+  .sigil.cold .rune-band textPath { fill: rgba(140,170,255,0.70); }
+  .sigil.cold .spoke { stroke: rgba(140,170,255,0.45); }
+  .sigil.cold .shell {
+    fill: rgba(120,150,255,0.06);
+    stroke: rgba(140,170,255,0.70);
+    filter: drop-shadow(0 0 8px rgba(140,170,255,0.45));
+  }
+  .sigil.cold .core {
+    fill: #c0d0ff;
+    filter: drop-shadow(0 0 14px rgba(180,200,255,1))
+            drop-shadow(0 0 28px rgba(140,170,255,0.65));
+  }
+
+  /* --- thinking --- */
+  .sigil.thinking .core { animation-duration: 1.2s; }
+  .sigil.thinking .spoke { animation-duration: 1.4s; }
+
+  /* --- speaking --- */
+  .sigil.speaking .core { animation-duration: 0.6s; }
+  .sigil.speaking .spoke { animation-duration: 0.8s; }
+  .sigil.speaking { animation-duration: 2.5s; }
+
+  /* --- animations --- */
+  @keyframes breathe {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.03); }
+  }
+
+  @keyframes corePulse {
+    0%, 100% { opacity: 0.9; }
+    50%      { opacity: 1; }
+  }
+    50%      { opacity: 1;   r: 9; }
+  }
   50%      { transform: translateY(-4px) scale(1.04); }
 }
   .toolbar button {
@@ -145,3 +227,8 @@
     white-space: nowrap;
   }
   .toolbar button:hover { color: var(--warm); border-color: var(--warm); }
+
+  @keyframes spokePulse {
+    0%, 100% { opacity: 0.4; }
+    50%      { opacity: 1.0; }
+  }
